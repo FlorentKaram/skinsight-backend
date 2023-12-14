@@ -11,7 +11,7 @@ services:
       traefik.http.routers.skinsight-backend.tls: true
       traefik.http.routers.skinsight-backend.rule: (Host(sample-restaurant.com) || Host(www.sample-restaurant.com)) && PathPrefix(/backskinsight/)
     ports:
-      - 3000:3000
+      - 3001:3001
     networks:
       - skinsight-backend
 
