@@ -8,94 +8,135 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Restaurant {
-  id           String        @id @unique @default(uuid())
-  name         String
-  address      String
-  description  String
-  price        String
-  n_siret      String
-  phone        String
-  code_postal  String
-  city         String
-  email        String
-  users        User[]        
-  features     Feature[]
-  favorites    Favorite[]
-  reservations Reservation[]
-  createdAt    DateTime
-  updatedAt    DateTime
+enum Role {
+  ADMIN
+  DERMATOLOGIST
+  GENERALIST
+  PATIENT
 }
 
-model Favorite {
-  id           String     @id @unique @default(uuid())
-  userId       String
-  restaurantId String
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-}
-
-model Reservation {
-  id           String     @id @unique @default(uuid())
-  date         DateTime
-  nb_people    Int
-  status       Status
-  userId       String
-  restaurantId String
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-  createdAt    DateTime
-  updatedAt    DateTime
-}
-
-model Feature {
-  id         String       @id @unique @default(uuid())
-  name       String
-  icon       String?
-  category   Category[]
-  restaurant Restaurant[]
-}
-
-model Category {
-  id      String    @id @unique @default(uuid())
-  name    String
-  feature Feature[]
-}
-
-model User {
-  id          String        @id @unique @default(uuid())
-  name        String
-  email       String        @unique
-  phone       String?
-  password    String
-  description String?
-  roleId      String
-  role        Role          @relation(fields: [roleId], references: [id])
-  avatar      String?
-  banner      String?
-  favorite    Favorite[]
-  reservation Reservation[]
-  restaurantId String?
-  restaurant  Restaurant?  @relation(fields: [restaurantId], references: [id])
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-}
-
-model Role {
-  id   String @id @unique @default(uuid())
-  name String
-  user User[]
+enum Sex {
+  MALE
+  FEMALE
 }
 
 enum Status {
   PENDING
-  ACCEPTED
-  REFUSED
+  IN_PROGRESS
+  TERMINATED
+  CANCELED
 }
 
-enum Price {
-  ECO
-  MODERATE
-  EXPENSIVE
-  VERY_EXPENSIVE
+enum Criticality {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id          String   @id @unique @default(uuid())
+  role        Role     @default(PATIENT)
+  sex         Sex
+  password    String
+  firstName   String
+  lastName    String
+  email       String   @unique
+  dateOfBirth DateTime
+  address     String
+  city        String
+  zipCode     String
+  secuNumber  String?
+  rppsNumber  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  consultations             Consultation[]
+  documents                 Document[]
+  appointmentsPatient       Appointment[]  @relation("Patient")
+  appointmentsDermatologist Appointment[]  @relation("Dermatologist")
+  conversationPatient       Conversation[] @relation("Patient")
+  conversationProfessional  Conversation[] @relation("Professional")
+  messages                  Message[]
+}
+
+model Consultation {
+  id        String   @id @unique @default(uuid())
+  status    Status   @default(PENDING)
+  advice    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  patientId String
+  patient   User       @relation(fields: [patientId], references: [id])
+  document  Document[]
+  analysis  Analysis[]
+}
+
+model Document {
+  id        String   @id @unique @default(uuid())
+  name      String
+  type      String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  consultationId String
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+}
+
+model Analysis {
+  id          String      @id @unique @default(uuid())
+  result      String
+  criticality Criticality
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relationships
+  consultationId String
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
+}
+
+model Appointment {
+  id        String   @id @unique @default(uuid())
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  patientId String
+  patient   User   @relation("Patient", fields: [patientId], references: [id])
+
+  dermatologistId String
+  dermatologist   User   @relation("Dermatologist", fields: [dermatologistId], references: [id])
+}
+
+model Conversation {
+  id        String   @id @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  patientId      String
+  patient        User      @relation("Patient", fields: [patientId], references: [id])
+  professionalId String
+  professional   User      @relation("Professional", fields: [professionalId], references: [id])
+  messages       Message[]
+}
+
+model Message {
+  id        String   @id @unique @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
 }
