@@ -9,6 +9,7 @@ COPY package*.json ./
 
 # Install app dependencies
 RUN npm install
+RUN npm run migrate
 
 # Bundle app source
 COPY . .
