@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  skinsight-backend:
+    container_name: skinsight-backend
+    image: ghcr.io/florentkaram/skinsight-backend/skinsight-backend:latest
+    restart: unless-stopped
+    command: npm run start:prod
+    labels:
+      traefik.enable: true
+      traefik.http.routers.skinsight-backend.entrypoints: websecure
+      traefik.http.routers.skinsight-backend.tls: true
+      traefik.http.routers.skinsight-backend.rule: (Host(sample-restaurant.com) || Host(www.sample-restaurant.com)) && PathPrefix(/backskinsight/)
+    ports:
+      - 3000:3000
+    networks:
+      - skinsight-backend
+
+  skinsight-postgres:
+    container_name: skinsight-postgres
+    image: postgres:13.3-alpine
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    labels:
+      traefik.enable: true
+      traefik.tcp.routers.skinsight-postgres.rule: HostSNI(`*`)
+      traefik.tcp.routers.skinsight-postgres.entrypoints: postgresarchi
+    environment:
+      POSTGRES_USER: skinsight
+      POSTGRES_PASSWORD: skinsight
+      POSTGRES_DB: skinsight
+    volumes:
+      - ./skinsight-postgres:/var/lib/postgresql/data
+    networks:
+      - skinsight-backend
+
+volumes :
+  skinsight-postgres:
+    name: skinsight-postgres
+networks:
+  skinsight-backend:
+    name: skinsight-backend

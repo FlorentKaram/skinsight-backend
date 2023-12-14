@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  DERMATOLOGIST
+  GENERALIST
+  PATIENT
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  TERMINATED
+  CANCELED
+}
+
+enum Criticality {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id          String   @id @unique @default(uuid())
+  role        Role     @default(PATIENT)
+  sex         Sex
+  password    String
+  firstName   String
+  lastName    String
+  email       String   @unique
+  dateOfBirth DateTime
+  address     String
+  city        String
+  zipCode     String
+  secuNumber  String?
+  rppsNumber  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  consultations             Consultation[]
+  documents                 Document[]
+  appointmentsPatient       Appointment[]  @relation("Patient")
+  appointmentsDermatologist Appointment[]  @relation("Dermatologist")
+  conversationPatient       Conversation[] @relation("Patient")
+  conversationProfessional  Conversation[] @relation("Professional")
+  messages                  Message[]
+}
+
+model Consultation {
+  id        String   @id @unique @default(uuid())
+  status    Status   @default(PENDING)
+  advice    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  patientId String
+  patient   User       @relation(fields: [patientId], references: [id])
+  document  Document[]
+  analysis  Analysis[]
+}
+
+model Document {
+  id        String   @id @unique @default(uuid())
+  name      String
+  type      String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  consultationId String
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+}
+
+model Analysis {
+  id          String      @id @unique @default(uuid())
+  result      String
+  criticality Criticality
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relationships
+  consultationId String
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
+}
+
+model Appointment {
+  id        String   @id @unique @default(uuid())
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  patientId String
+  patient   User   @relation("Patient", fields: [patientId], references: [id])
+
+  dermatologistId String
+  dermatologist   User   @relation("Dermatologist", fields: [dermatologistId], references: [id])
+}
+
+model Conversation {
+  id        String   @id @unique @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  patientId      String
+  patient        User      @relation("Patient", fields: [patientId], references: [id])
+  professionalId String
+  professional   User      @relation("Professional", fields: [professionalId], references: [id])
+  messages       Message[]
+}
+
+model Message {
+  id        String   @id @unique @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+}
