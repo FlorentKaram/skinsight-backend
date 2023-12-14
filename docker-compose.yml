@@ -4,9 +4,6 @@ services:
     container_name: skinsight-backend
     image: ghcr.io/florentkaram/skinsight-backend/skinsight-backend:latest
     restart: unless-stopped
-    command: 
-    - npx prisma migrate deploy
-    - npm run start:prod
     labels:
       traefik.enable: true
       traefik.http.routers.skinsight-backend.entrypoints: websecure
