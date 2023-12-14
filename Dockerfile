@@ -1,5 +1,5 @@
 # Base image
-FROM node:18
+FROM node:18 as builder
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -15,11 +15,10 @@ RUN npx prisma generate
 # Bundle app source
 COPY . .
 
-
 # Creates a "dist" folder with the production build
 RUN npm run build
 
-FROM node:18
+FROM node:18 as production
 
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package*.json ./

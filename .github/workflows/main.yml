@@ -35,7 +35,7 @@ jobs:
           command: | 
             cd /projects/skinsight/skinsight-backend/
             docker login ghcr.io -u ${{ secrets.GIT_USERNAME }} -p ${{ secrets.GIT_TOKEN }}
-            git remote set-url origin https://%24%7B%7B/ secrets.GIT_USERNAME }}:${{ secrets.GIT_TOKEN }}@github.com/FlorentKaram/skinsight-backend.git
+            git remote set-url origin https://${{ secrets.GIT_USERNAME }}:${{ secrets.GIT_TOKEN }}@github.com/FlorentKaram/skinsight-backend.git
             git pull
             docker stop skinsight-backend
             docker rm skinsight-backend
