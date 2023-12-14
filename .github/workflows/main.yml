@@ -13,7 +13,7 @@ jobs:
     - name: creating env variables
       run: |
         touch .env
-        echo DB_URL=${{secrets.DB_URL}} >> ..env
+        echo DATABASE_URL=${{secrets.DATABASE_URL}} >> ..env
 
     - name: Publish Docker Image to GitHub Registry
       uses: TilBlechschmidt/gp-docker-action@v0.2-alpha
