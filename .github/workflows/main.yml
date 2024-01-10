@@ -16,11 +16,11 @@ jobs:
         echo DATABASE_URL=${{secrets.DATABASE_URL}} >> ..env
 
     - name: Publish Docker Image to GitHub Registry
-      uses: TilBlechschmidt/gp-docker-action@v0.2-alpha
+      uses: VaultVulp/gp-docker-action@1.2.0
       with:
         github-token: ${{ secrets.GIT_TOKEN }}
         image-name: skinsight-backend
-        args: --build-arg=DATABASE_URL=${{secrets.DATABASE_URL}}
+        custom-args: --build-arg=DATABASE_URL=${{secrets.DATABASE_URL}}
 
   deploy:
     runs-on: ubuntu-latest
