@@ -15,11 +15,37 @@ import { Request, Response } from 'express';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @HttpCode(HttpStatus.OK)
-  @Post('register')
-  async register(@Body() registerDto: Record<string, User>) {
-    return await this.authService.register(registerDto.user);
-  }
+  // @HttpCode(HttpStatus.OK)
+  // @Post('register')
+  // async register(
+  //   // registerDto is an object with a user property without id, createdAt, updatedAt
+  //   @Body() registerDto: Omit<User, 'id' | 'createdAt' | 'updatedAt'>,
+  //   @Res() res: Response,
+  // ) {
+  //   const accessToken = await this.authService.createAccessToken(
+  //     registerDto.email,
+  //   );
+  //   const refreshToken = await this.authService.createRefreshToken(
+  //     registerDto.email,
+  //   );
+
+  //   const user = await this.authService.register(registerDto);
+
+  //   return res
+  //     .cookie('refresh_token', refreshToken, {
+  //       httpOnly: true,
+  //       secure: true,
+  //       sameSite: 'strict',
+  //     })
+  //     .json({
+  //       access_token: accessToken,
+  //       userId: user.id,
+  //       firstName: user.firstName,
+  //       lastName: user.lastName,
+  //       email: user.email,
+  //       role: user.role,
+  //     });
+  // }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')

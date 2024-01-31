@@ -11,30 +11,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(user: User) {
-    const userExists = await this.usersService.findByEmail(user.email);
-    if (userExists) {
-      throw new UnauthorizedException('Email is already taken');
-    }
-    this.usersService.create(user);
-
-    // Generate JWT
-    const accessToken = await this.createAccessToken(user.id);
-    const refreshToken = await this.createRefreshToken(user.id);
-
-    return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      userId: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-    };
-  }
+  // async register(registerDTO: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) {
+  //   // const userExists = this.usersService.findOne();
+  //   // if (userExists) {
+  //   //   throw new UnauthorizedException('Email is already taken');
+  //   // }
+  //   const user = await this.usersService.create(registerDTO);
+  //   return 'user';
+  // }
 
   async login(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findOne(email);
     if (!user || user.password !== password) {
       throw new UnauthorizedException('Invalid email or password');
     }
@@ -59,7 +46,7 @@ export class AuthService {
   }
 
   async validateUser(payload: any): Promise<any> {
-    return await this.usersService.findById(payload.sub);
+    return await this.usersService.findOne(payload.sub);
   }
 
   decodeRefreshToken(token: string) {
