@@ -27,6 +27,6 @@ COPY --from=builder /usr/src/app/package*.json ./
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
+CMD ["sh", "-c", "npm run start:prod"]
 
 
