@@ -3,9 +3,10 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
   // url       = env("DATABASE_URL")
-  url = "postgres://skinsight:skinsight@skinsight-postgres:5432/skinsight"
+  // directUrl = env("DIRECT_URL")
+  url      = "postgres://skinsight:skinsight@skinsight-postgres:5432/skinsight"
 }
 
 enum Role {
@@ -49,6 +50,7 @@ model User {
   rppsNumber  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  approved    Boolean  @default(true)
 
   // Relationships
   consultations             Consultation[]
@@ -64,6 +66,7 @@ model Consultation {
   id        String   @id @unique @default(uuid())
   status    Status   @default(PENDING)
   advice    String?
+  key       String // encrypted key to access
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
