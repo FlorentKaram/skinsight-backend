@@ -17,12 +17,6 @@ import { ApiTags } from '@nestjs/swagger';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    console.log(createUserDto);
-    return this.usersService.create(createUserDto);
-  }
-
   @Get('all')
   findAll() {
     return this.usersService.findAll();
@@ -35,7 +29,6 @@ export class UsersController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    console.log(id);
     return this.usersService.update(id, updateUserDto);
   }
 

@@ -1,6 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { v4 as uuid } from 'uuid';
 
@@ -11,17 +17,17 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // async register(registerDTO: Omit<User, 'id' | 'createdAt' | 'updatedAt'>) {
-  //   // const userExists = this.usersService.findOne();
-  //   // if (userExists) {
-  //   //   throw new UnauthorizedException('Email is already taken');
-  //   // }
-  //   const user = await this.usersService.create(registerDTO);
-  //   return 'user';
-  // }
+  async register(registerDTO: CreateUserDto): Promise<User> {
+    const userExists = await this.usersService.exists(registerDTO.email);
+    if (userExists) {
+      throw new ConflictException('User already exists');
+    }
+    const user = await this.usersService.create(registerDTO);
+    return user;
+  }
 
   async login(email: string, password: string) {
-    const user = await this.usersService.findOne(email);
+    const user = await this.usersService.findByEmail(email);
     if (!user || user.password !== password) {
       throw new UnauthorizedException('Invalid email or password');
     }

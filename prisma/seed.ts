@@ -27,7 +27,7 @@ async function main() {
       email: 'test@skinsight.com',
       firstName: 'John',
       lastName: 'Wick',
-      password: 'test',
+      password: 'test1234',
       role: Role.PATIENT,
       sex: Sex.MALE,
       dateOfBirth: new Date(0),

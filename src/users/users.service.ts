@@ -22,13 +22,25 @@ export class UsersService {
     });
   }
 
+  exists(email: string) {
+    const exist = this.prisma.user.findUnique({
+      where: { email },
+    });
+    return exist;
+  }
+
+  findByEmail(email: string) {
+    console.log(email);
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   update(id: string, updateUserDto: UpdateUserDto) {
-    this.prisma.user.update({
+    return this.prisma.user.update({
       where: { id },
       data: updateUserDto,
     });
-
-    return this.findOne(id);
   }
 
   remove(id: string) {

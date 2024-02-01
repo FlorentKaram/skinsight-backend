@@ -1,3 +1,4 @@
+import { CreateUserDto } from './../users/dto/create-user.dto';
 import {
   Body,
   Controller,
@@ -10,53 +11,55 @@ import {
 import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  // @HttpCode(HttpStatus.OK)
-  // @Post('register')
-  // async register(
-  //   // registerDto is an object with a user property without id, createdAt, updatedAt
-  //   @Body() registerDto: Omit<User, 'id' | 'createdAt' | 'updatedAt'>,
-  //   @Res() res: Response,
-  // ) {
-  //   const accessToken = await this.authService.createAccessToken(
-  //     registerDto.email,
-  //   );
-  //   const refreshToken = await this.authService.createRefreshToken(
-  //     registerDto.email,
-  //   );
+  @HttpCode(HttpStatus.OK)
+  @Post('register')
+  async register(@Body() registerDto: CreateUserDto, @Res() res: Response) {
+    const user = await this.authService.register(registerDto);
+    const accessToken = await this.authService.createAccessToken(
+      registerDto.email,
+    );
+    const refreshToken = await this.authService.createRefreshToken(
+      registerDto.email,
+    );
 
-  //   const user = await this.authService.register(registerDto);
-
-  //   return res
-  //     .cookie('refresh_token', refreshToken, {
-  //       httpOnly: true,
-  //       secure: true,
-  //       sameSite: 'strict',
-  //     })
-  //     .json({
-  //       access_token: accessToken,
-  //       userId: user.id,
-  //       firstName: user.firstName,
-  //       lastName: user.lastName,
-  //       email: user.email,
-  //       role: user.role,
-  //     });
-  // }
+    return res
+      .cookie('refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict',
+      })
+      .json({
+        access_token: accessToken,
+        user: {
+          userId: user.id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          role: user.role,
+        },
+      });
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(
-    @Res() res: Response,
-    @Body() body: { email: string; password: string },
-  ) {
-    const accessToken = await this.authService.createAccessToken(body.email);
-    const refreshToken = await this.authService.createRefreshToken(body.email);
+  async login(@Res() res: Response, @Body() loginDto: LoginDto) {
+    const accessToken = await this.authService.createAccessToken(
+      loginDto.email,
+    );
+    const refreshToken = await this.authService.createRefreshToken(
+      loginDto.email,
+    );
 
-    const user = await this.authService.login(body.email, body.password);
+    const user = await this.authService.login(
+      loginDto.email,
+      loginDto.password,
+    );
 
     return res
       .cookie('refresh_token', refreshToken, {
