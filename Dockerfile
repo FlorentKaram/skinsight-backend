@@ -27,4 +27,6 @@ COPY --from=builder /usr/src/app/package*.json ./
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npm run start:prod"]
+# CMD ["npm", "run", "start:migrate:prod"]
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && npm run start:prod"]
+
