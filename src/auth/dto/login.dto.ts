@@ -4,6 +4,7 @@ import { IsEmail, IsNotEmpty, Length } from 'class-validator';
 
 export class LoginDto {
   @ApiProperty({ example: 'test@skinsight.com' })
+  @IsNotEmpty()
   @IsEmail()
   email: string;
 

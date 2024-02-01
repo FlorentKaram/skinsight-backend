@@ -12,8 +12,10 @@ import { AuthService } from './auth.service';
 import { User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { LoginDto } from './dto/login.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
