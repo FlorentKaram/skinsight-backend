@@ -25,5 +25,5 @@ RUN npm run build
 # COPY --from=builder /usr/src/app/prisma ./prisma
 # COPY --from=builder /usr/src/app/package*.json ./
 
-# EXPOSE 3000
-# CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
+EXPOSE 3000
+CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
