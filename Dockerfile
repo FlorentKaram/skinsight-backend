@@ -10,7 +10,6 @@ COPY prisma ./prisma/
 
 # Install app dependencies
 RUN npm install
-RUN npm update
 RUN npx prisma generate
 
 # Bundle app source
@@ -27,4 +26,4 @@ COPY --from=builder /usr/src/app/prisma ./prisma
 COPY --from=builder /usr/src/app/package*.json ./
 
 EXPOSE 3000
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
+CMD ["sh", "-c", "npm run start:prod"]
