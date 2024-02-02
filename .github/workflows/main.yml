@@ -13,7 +13,8 @@ jobs:
     - name: creating env variables
       run: |
         touch .env
-        echo DATABASE_URL=${{secrets.DATABASE_URL}} >> ..env
+        echo DATABASE_URL=${{secrets.DATABASE_URL}} >> .env
+        cat .env
 
     - name: Publish Docker Image to GitHub Registry
       uses: VaultVulp/gp-docker-action@1.2.0
