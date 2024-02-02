@@ -18,6 +18,10 @@ services:
     container_name: skinsight-postgres-dev
     image: postgres:13.3-alpine
     restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.tcp.routers.skinsight-postgres-dev.rule: HostSNI(`*`)
+      traefik.tcp.routers.skinsight-postgres-dev.entrypoints: postgresarchidev
     ports:
       - 5433:5432
     environment:
