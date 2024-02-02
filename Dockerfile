@@ -26,4 +26,4 @@ COPY --from=builder /usr/src/app/prisma ./prisma
 COPY --from=builder /usr/src/app/package*.json ./
 
 EXPOSE 3000
-CMD ["npm", "run", "start:migrate:prod"]
+CMD ["npm", "run", "start:server:prod"]
