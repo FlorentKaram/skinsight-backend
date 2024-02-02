@@ -55,8 +55,12 @@ async function bootstrap() {
     SwaggerModule.setup('backskinsight/' + 'api', app, document);
   }
   await app.listen(3000);
-  console.log(
-    'Swagger is running on http://localhost:3000/dev/backskinsight/api',
-  );
+  env === 'dev'
+    ? console.log(
+        '\n Swagger is running on http://localhost:3000/dev/backskinsight/api',
+      )
+    : console.log(
+        '\n Swagger is running on http://localhost:3000/backskinsight/api',
+      );
 }
 bootstrap();
