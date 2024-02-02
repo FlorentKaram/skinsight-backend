@@ -35,4 +35,4 @@ jobs:
             docker stop skinsight-backend-dev
             docker rm skinsight-backend-dev
             docker image rm -f ghcr.io/florentkaram/skinsight-backend/skinsight-backend-dev
-            docker compose up -d -f docker-compose-dev.yml
+            docker compose -f docker-compose-dev.yml up -d 
