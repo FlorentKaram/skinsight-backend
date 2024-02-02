@@ -23,4 +23,5 @@ FROM node:18 as production
 COPY --from=builder /usr/src/app/ ./
 
 EXPOSE 3000
+
 CMD ["npm", "run", "start:server:prod"]
