@@ -26,7 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
-      - Analysis
 
     steps:
       - name: SSH Execute Commands
