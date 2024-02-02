@@ -14,28 +14,6 @@ services:
     networks:
       - skinsight-backend
 
-  skinsight-postgres-dev:
-    container_name: skinsight-postgres-dev
-    image: postgres:13.3-alpine
-    restart: unless-stopped
-    labels:
-      traefik.enable: true
-      traefik.tcp.routers.skinsight-postgres-dev.rule: HostSNI(`*`)
-      traefik.tcp.routers.skinsight-postgres-dev.entrypoints: postgresarchidev
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: skinsight
-      POSTGRES_PASSWORD: skinsight
-      POSTGRES_DB: skinsight
-    volumes:
-      - ./skinsight-postgres:/var/lib/postgresql/data
-    networks:
-      - skinsight-backend
-
-volumes:
-  skinsight-postgres:
-    name: skinsight-postgres
 networks:
   skinsight-backend:
     name: skinsight-backend

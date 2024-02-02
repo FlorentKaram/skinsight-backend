@@ -28,7 +28,7 @@ async function bootstrap() {
   // app.use(urlencoded({ extended: true, limit: '50mb' }));
   app.use(cookieParser());
   if (env === 'dev') {
-    app.setGlobalPrefix('dev/backskinsight/');
+    app.setGlobalPrefix('/dev/backskinsight/');
   } else {
     app.setGlobalPrefix('backskinsight/');
   }
