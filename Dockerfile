@@ -10,6 +10,7 @@ COPY prisma ./prisma/
 
 # Install app dependencies
 RUN npm install
+RUN npm update
 RUN npx prisma generate
 
 # Bundle app source
