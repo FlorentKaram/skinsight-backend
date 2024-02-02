@@ -29,15 +29,16 @@ async function bootstrap() {
   app.enableCors();
   if (env === 'dev') {
     app.setGlobalPrefix('/dev/backskinsight/');
-  }
-  else {
+  } else {
     app.setGlobalPrefix('backskinsight/');
   }
   app.enableCors({
     origin: [
+      'http://localhost:5173',
       'https://sample-restaurant.com/',
       'https://www.sample-restaurant.com/',
     ],
+    credentials: true,
   });
   // TODO : DTO check
   app.useGlobalPipes(
@@ -49,11 +50,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   if (env === 'dev') {
     SwaggerModule.setup('dev/backskinsight/' + 'api', app, document);
-  }
-  else {
+  } else {
     SwaggerModule.setup('backskinsight/' + 'api', app, document);
   }
   await app.listen(3000);
-  console.log('Swagger is running on http://localhost:3000/dev/backskinsight/api');
+  console.log(
+    'Swagger is running on http://localhost:3000/dev/backskinsight/api',
+  );
 }
 bootstrap();
