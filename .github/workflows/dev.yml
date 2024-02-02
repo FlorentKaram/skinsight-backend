@@ -13,6 +13,7 @@ jobs:
       run: |
         echo DATABASE_URL=${{secrets.DATABASE_URL_DEV}} >> .env
         echo NODE_ENV="dev" >> .env
+        cat .env
     - name: Publish Docker Image to GitHub Registry
       uses: VaultVulp/gp-docker-action@1.2.0
       with:
