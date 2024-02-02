@@ -8,7 +8,7 @@ datasource db {
   // directUrl = env("DIRECT_URL")
   // url       = "postgresql://Francois-BONNIN:WE1R6iqkxQdF@ep-wild-bread-01055778-pooler.eu-central-1.aws.neon.tech/skinsight?sslmode=require&pgbouncer=true"
   // directUrl = "postgresql://Francois-BONNIN:WE1R6iqkxQdF@ep-wild-bread-01055778.eu-central-1.aws.neon.tech/skinsight?sslmode=require"
-  url      = "postgres://skinsight:skinsight@skinsight-postgres:5432/skinsight"
+  url      = "postgres://skinsight:skinsight@skinsight-postgres-dev:5433/skinsight"
 }
 
 enum Role {
