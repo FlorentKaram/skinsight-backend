@@ -9,6 +9,7 @@ import { User } from '@prisma/client';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import { v4 as uuid } from 'uuid';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -28,10 +29,14 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
-    if (!user || user.password !== password) {
-      throw new UnauthorizedException('Invalid email or password');
+    if (!user) {
+      throw new UnauthorizedException('Invalid email');
     }
 
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid password');
+    }
     return user;
   }
 

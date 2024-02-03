@@ -1,16 +1,24 @@
 import { PrismaClient, Role, Sex } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+const roundsOfHash = 10;
+
 async function main() {
+  const adminPassword = await bcrypt.hash('admin', roundsOfHash);
+  const testPassword = await bcrypt.hash('test1234', roundsOfHash);
+
   const user = await prisma.user.upsert({
     where: { email: 'admin@skinsight.com' },
-    update: {},
+    update: {
+      password: adminPassword,
+    },
     create: {
       email: 'admin@skinsight.com',
       firstName: 'admin',
       lastName: 'admin',
-      password: 'admin',
+      password: adminPassword,
       role: Role.ADMIN,
       sex: Sex.MALE,
       dateOfBirth: new Date(0),
@@ -22,12 +30,14 @@ async function main() {
 
   const user2 = await prisma.user.upsert({
     where: { email: 'test@skinsight.com' },
-    update: {},
+    update: {
+      password: testPassword,
+    },
     create: {
       email: 'test@skinsight.com',
       firstName: 'John',
       lastName: 'Wick',
-      password: 'test1234',
+      password: testPassword,
       role: Role.PATIENT,
       sex: Sex.MALE,
       dateOfBirth: new Date(0),

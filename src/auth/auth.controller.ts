@@ -23,12 +23,8 @@ export class AuthController {
   @Post('register')
   async register(@Body() registerDto: CreateUserDto, @Res() res: Response) {
     const user = await this.authService.register(registerDto);
-    const accessToken = await this.authService.createAccessToken(
-      registerDto.email,
-    );
-    const refreshToken = await this.authService.createRefreshToken(
-      registerDto.email,
-    );
+    const accessToken = await this.authService.createAccessToken(user.id);
+    const refreshToken = await this.authService.createRefreshToken(user.id);
 
     return res
       .cookie('refresh_token', refreshToken, {
@@ -51,17 +47,12 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async login(@Res() res: Response, @Body() loginDto: LoginDto) {
-    const accessToken = await this.authService.createAccessToken(
-      loginDto.email,
-    );
-    const refreshToken = await this.authService.createRefreshToken(
-      loginDto.email,
-    );
-
     const user = await this.authService.login(
       loginDto.email,
       loginDto.password,
     );
+    const accessToken = await this.authService.createAccessToken(user.id);
+    const refreshToken = await this.authService.createRefreshToken(user.id);
 
     return res
       .cookie('refresh_token', refreshToken, {

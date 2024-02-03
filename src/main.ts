@@ -8,19 +8,17 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const env = process.env.NODE_ENV || 'dev';
   console.log('env value:', process.env.NODE_ENV);
+
   const config = new DocumentBuilder()
     // swagger title
     .setTitle('Skinsight API')
     // swagger description
     .setDescription('Skinsight API description')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'acces-token',
-    )
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     //your api version
     .setVersion('1.0.0')
     .build();
@@ -54,8 +52,12 @@ async function bootstrap() {
     SwaggerModule.setup('backskinsight/' + 'api', app, document);
   }
   await app.listen(3000);
-  console.log(
-    'Swagger is running on http://localhost:3000/dev/backskinsight/api',
-  );
+  env === 'dev'
+    ? console.log(
+        '\n Swagger is running on http://localhost:3000/dev/backskinsight/api',
+      )
+    : console.log(
+        '\n Swagger is running on http://localhost:3000/backskinsight/api',
+      );
 }
 bootstrap();
