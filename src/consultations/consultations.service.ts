@@ -18,18 +18,22 @@ export class ConsultationsService {
   }
 
   findAll() {
-    return `This action returns all consultations`;
+    return this.prisma.consultation.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} consultation`;
+  findOne(id: string) {
+    return this.prisma.consultation.findUnique({
+      where: { id },
+    });
   }
 
-  update(id: number, updateConsultationDto: UpdateConsultationDto) {
+  update(id: string, updateConsultationDto: UpdateConsultationDto) {
     return `This action updates a #${id} consultation`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} consultation`;
+  remove(id: string) {
+    return this.prisma.consultation.delete({
+      where: { id },
+    });
   }
 }

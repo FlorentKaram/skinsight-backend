@@ -29,7 +29,7 @@ export class ConsultationsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.consultationsService.findOne(+id);
+    return this.consultationsService.findOne(id);
   }
 
   @Patch(':id')
@@ -37,11 +37,11 @@ export class ConsultationsController {
     @Param('id') id: string,
     @Body() updateConsultationDto: UpdateConsultationDto,
   ) {
-    return this.consultationsService.update(+id, updateConsultationDto);
+    return this.consultationsService.update(id, updateConsultationDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.consultationsService.remove(+id);
+    return this.consultationsService.remove(id);
   }
 }
