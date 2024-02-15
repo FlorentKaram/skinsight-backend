@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -52,7 +53,6 @@ model User {
 
   // Relationships
   consultations             Consultation[]
-  documents                 Document[]
   appointmentsPatient       Appointment[]  @relation("Patient")
   appointmentsDermatologist Appointment[]  @relation("Dermatologist")
   conversationPatient       Conversation[] @relation("Patient")
@@ -61,33 +61,21 @@ model User {
 }
 
 model Consultation {
-  id        String   @id @unique @default(uuid())
-  status    Status   @default(PENDING)
-  advice    String?
-  key       String // encrypted key to access
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @unique @default(uuid())
+  status      Status   @default(PENDING)
+  object      String
+  description String
+  evolution   Boolean  @default(false)
+  advice      String?
+  files       String[]
+  key         String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   // Relationships
   patientId String
   patient   User       @relation(fields: [patientId], references: [id])
-  document  Document[]
   analysis  Analysis[]
-}
-
-model Document {
-  id        String   @id @unique @default(uuid())
-  name      String
-  type      String
-  url       String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relationships
-  consultationId String
-  consultation   Consultation @relation(fields: [consultationId], references: [id])
-  userId         String
-  user           User         @relation(fields: [userId], references: [id])
 }
 
 model Analysis {

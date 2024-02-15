@@ -5,6 +5,8 @@ import { PrismaModule } from './database/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { ConsultationsModule } from './consultations/consultations.module';
+import { DocumentModule } from './document/document.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       envFilePath: '.env',
     }),
+    ConsultationsModule,
+    DocumentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
