@@ -19,7 +19,7 @@ export class AuthService {
   ) {}
 
   async register(registerDTO: CreateUserDto): Promise<User> {
-    const userExists = await this.usersService.exists(registerDTO.email);
+    const userExists = await this.usersService.findByEmail(registerDTO.email);
     if (userExists) {
       throw new ConflictException('User already exists');
     }
