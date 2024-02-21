@@ -16,7 +16,13 @@ export class UsersService {
       createUserDto.password,
       roundsOfHash,
     );
-
+    
+    if(createUserDto.role === Role.DERMATOLOGIST || createUserDto.role === Role.GENERALIST && !createUserDto.rppsNumber) {
+      throw new Error('RPPS number is required for dermatologist and generalist');
+    } else if(createUserDto.role === Role.PATIENT && !createUserDto.secuNumber) {
+      throw new Error('Secu number is required for patient');
+    }
+    
     return this.prisma.user.create({ data: createUserDto });
   }
 
