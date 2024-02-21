@@ -18,30 +18,30 @@ export class ConsultationsController {
   constructor(private readonly consultationsService: ConsultationsService) {}
 
   @Post()
-  create(@Body() createConsultationDto: CreateConsultationDto) {
-    return this.consultationsService.create(createConsultationDto);
+  async create(@Body() createConsultationDto: CreateConsultationDto) {
+    return await this.consultationsService.create(createConsultationDto);
   }
 
   @Get()
-  findAll() {
-    return this.consultationsService.findAll();
+  async findAll() {
+    return await this.consultationsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.consultationsService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    return await this.consultationsService.findOne(id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateConsultationDto: UpdateConsultationDto,
   ) {
-    return this.consultationsService.update(id, updateConsultationDto);
+    return await this.consultationsService.update(id, updateConsultationDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.consultationsService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.consultationsService.remove(id);
   }
 }

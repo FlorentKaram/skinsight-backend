@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBase64, IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateConsultationDto {
   @ApiProperty({ example: 'Analyse de grain de beauté' })
