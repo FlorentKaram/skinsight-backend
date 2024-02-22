@@ -46,9 +46,9 @@ async function bootstrap() {
     }),
   );
   const document = SwaggerModule.createDocument(app, config);
-  if (env === 'dev') {
-    console.log('coucou');
+      console.log('coucou');
     console.log(process.env);
+  if (env === 'dev') {
     SwaggerModule.setup('dev/backskinsight/' + 'api', app, document);
   } else {
     SwaggerModule.setup('backskinsight/' + 'api', app, document);
