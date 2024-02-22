@@ -12,6 +12,7 @@ jobs:
     - name: creating env variables
       run: |
         touch .env
+        echo AZERTYUIOP="azertyuiop" >> .env
         echo DATABASE_URL=${{secrets.DATABASE_URL_DEV}} >> .env
         echo NODE_ENV="dev" >> .env
         cat .env
