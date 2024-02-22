@@ -20,15 +20,11 @@ export class ConsultationsService {
     if (!patient) {
       throw new NotFoundException('Patient not found');
     }
-  
+
     // encrypt all fields in createConsultationDto except patientId
     const encryptedConsultation = this.encrypte.encryptObject(
-      {
-        ...createConsultationDto,
-        status: Status.PENDING,
-      }
+      createConsultationDto,
     );
-    
 
     const consultation = await this.prisma.consultation.create({
       data: encryptedConsultation,
@@ -56,6 +52,22 @@ export class ConsultationsService {
     }
 
     return this.encrypte.decryptObject(consultation, ['id', 'patientId']);
+  }
+
+  async findByPatient(id: string) {
+    const patient = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!patient) {
+      throw new NotFoundException('Patient not found');
+    }
+
+    const consultations = await this.prisma.consultation.findMany({
+      where: { patientId: id },
+    });
+
+    return consultations.map((c) => this.encrypte.decryptObject(c));
   }
 
   async update(id: string, updateConsultationDto: UpdateConsultationDto) {

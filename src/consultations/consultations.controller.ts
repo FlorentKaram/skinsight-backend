@@ -32,6 +32,11 @@ export class ConsultationsController {
     return await this.consultationsService.findOne(id);
   }
 
+  @Get('patient/:id')
+  async findByPatient(@Param('id') id: string) {
+    return await this.consultationsService.findByPatient(id);
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,
