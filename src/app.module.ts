@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { ConsultationsModule } from './consultations/consultations.module';
 import { EncryptionModule } from './encryption/encryption.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EncryptionModule } from './encryption/encryption.module';
     }),
     ConsultationsModule,
     EncryptionModule,
+    AppointmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

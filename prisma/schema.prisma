@@ -21,9 +21,8 @@ enum Sex {
 
 enum Status {
   PENDING
-  IN_PROGRESS
-  TERMINATED
-  CANCELED
+  ANALYZED
+  APPOINTMENT
 }
 
 enum Criticality {
@@ -103,10 +102,10 @@ model Analysis {
 }
 
 model Appointment {
-  id        String   @id @unique @default(uuid())
-  date      DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String    @id @unique @default(uuid())
+  date      DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   // Relationships
   patientId String
