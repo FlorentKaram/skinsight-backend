@@ -12,7 +12,7 @@ jobs:
     - name: creating env variables
       run: |
         touch .env
-        echo DATABASE_URL="wallah" >> .env
+        echo DATABASE_URL="postgresql://Francois-BONNIN:WE1R6iqkxQdF@ep-wild-bread-01055778-pooler.eu-central-1.aws.neon.tech/skinsight?sslmode=require&pgbouncer=true" >> .env
         echo NODE_ENV="dev" >> .env
         cat .env
         
