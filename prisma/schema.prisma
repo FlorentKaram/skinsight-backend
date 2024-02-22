@@ -51,30 +51,39 @@ model User {
   approved    Boolean  @default(true)
 
   // Relationships
-  consultations             Consultation[]
-  appointmentsPatient       Appointment[]  @relation("Patient")
-  appointmentsDermatologist Appointment[]  @relation("Dermatologist")
-  conversationPatient       Conversation[] @relation("Patient")
-  conversationProfessional  Conversation[] @relation("Professional")
-  messages                  Message[]
+  consultationsPatient       Consultation[] @relation("ConsPatient")
+  consultationsGeneralist    Consultation[] @relation("ConsGeneralist")
+  consultationsDermatologist Consultation[] @relation("ConsDermatologist")
+
+  appointmentsPatient        Appointment[]  @relation("AppPatient")
+  appointmentsDermatologist  Appointment[]  @relation("AppDermatologist")
+  conversationsGeneralist    Conversation[] @relation("ConvGeneralist")
+  conversationsDermatologist Conversation[] @relation("ConvDermatologist")
+  messages                   Message[]
 }
 
 model Consultation {
-  id          String   @id @unique @default(uuid())
-  status      Status   @default(PENDING)
+  id          String       @id @unique @default(uuid())
+  status      Status       @default(PENDING)
   object      String
   description String
-  evolution   Boolean  @default(false)
-  advice      String?
+  evolution   Boolean      @default(false)
+  advice      String? // rempli par le generaliste
+  criticality Criticality? // rempli par le generaliste ou le dermatologiste
   file        String
-  key         String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   // Relationships
   patientId String
-  patient   User       @relation(fields: [patientId], references: [id])
-  analysis  Analysis[]
+  patient   User   @relation("ConsPatient", fields: [patientId], references: [id])
+
+  dermatologistId String?
+  dermatologist   User?   @relation("ConsDermatologist", fields: [dermatologistId], references: [id])
+
+  generalistId String?
+  generalist   User?      @relation("ConsGeneralist", fields: [generalistId], references: [id])
+  analysis     Analysis[]
 }
 
 model Analysis {
@@ -97,10 +106,10 @@ model Appointment {
 
   // Relationships
   patientId String
-  patient   User   @relation("Patient", fields: [patientId], references: [id])
+  patient   User   @relation("AppPatient", fields: [patientId], references: [id])
 
   dermatologistId String
-  dermatologist   User   @relation("Dermatologist", fields: [dermatologistId], references: [id])
+  dermatologist   User   @relation("AppDermatologist", fields: [dermatologistId], references: [id])
 }
 
 model Conversation {
@@ -109,11 +118,11 @@ model Conversation {
   updatedAt DateTime @updatedAt
 
   // Relationships
-  patientId      String
-  patient        User      @relation("Patient", fields: [patientId], references: [id])
-  professionalId String
-  professional   User      @relation("Professional", fields: [professionalId], references: [id])
-  messages       Message[]
+  generalistId    String
+  generalist      User      @relation("ConvGeneralist", fields: [generalistId], references: [id])
+  dermatologistId String
+  dermatologist   User      @relation("ConvDermatologist", fields: [dermatologistId], references: [id])
+  messages        Message[]
 }
 
 model Message {
