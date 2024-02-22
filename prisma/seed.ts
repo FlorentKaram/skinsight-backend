@@ -6,20 +6,20 @@ const prisma = new PrismaClient();
 const roundsOfHash = 10;
 
 async function main() {
-  const adminPassword = await bcrypt.hash('admin', roundsOfHash);
+  const adminPassword = await bcrypt.hash('generalist', roundsOfHash);
   const testPassword = await bcrypt.hash('test1234', roundsOfHash);
 
   const user = await prisma.user.upsert({
-    where: { email: 'admin@skinsight.com' },
+    where: { email: 'generalist@skinsight.com' },
     update: {
       password: adminPassword,
     },
     create: {
-      email: 'admin@skinsight.com',
-      firstName: 'admin',
-      lastName: 'admin',
+      email: 'generalist@skinsight.com',
+      firstName: 'General',
+      lastName: 'List',
       password: adminPassword,
-      role: Role.ADMIN,
+      role: Role.GENERALIST,
       sex: Sex.MALE,
       dateOfBirth: new Date(0),
       address: '2 place de la paix',

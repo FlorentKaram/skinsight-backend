@@ -1,5 +1,5 @@
 import { PrismaClient, Role } from '@prisma/client';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -16,31 +16,36 @@ export class UsersService {
       createUserDto.password,
       roundsOfHash,
     );
-
+    
+    if(createUserDto.role === Role.DERMATOLOGIST || createUserDto.role === Role.GENERALIST && !createUserDto.rppsNumber) {
+      throw new Error('RPPS number is required for dermatologist and generalist');
+    } else if(createUserDto.role === Role.PATIENT && !createUserDto.secuNumber) {
+      throw new Error('Secu number is required for patient');
+    }
+    
     return this.prisma.user.create({ data: createUserDto });
   }
 
-  findAll() {
+  async findAll() {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
     });
   }
 
-  exists(email: string) {
-    const exist = this.prisma.user.findUnique({
+  async findByEmail(email: string) {
+    const user = this.prisma.user.findUnique({
       where: { email },
     });
-    return exist;
-  }
 
-  findByEmail(email: string) {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -51,15 +56,27 @@ export class UsersService {
       );
     }
 
-    return this.prisma.user.update({
+    const user = this.prisma.user.update({
       where: { id },
       data: updateUserDto,
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    
+    return user;
   }
 
   remove(id: string) {
-    return this.prisma.user.delete({
+    const removeUser = this.prisma.user.delete({
       where: { id },
     });
+
+    if (!removeUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return "deleted successfully";
   }
 }
