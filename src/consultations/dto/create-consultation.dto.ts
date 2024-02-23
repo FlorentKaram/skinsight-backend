@@ -15,11 +15,11 @@ export class CreateConsultationDto {
   @IsBoolean()
   evolution: boolean;
 
-  @ApiProperty({ example: 'data:image/png;base64,iVBORw0...' })
+  @ApiProperty({ example: '["file1", "file2"]' })
   @IsNotEmpty()
-  file: string;
+  files: string[];
 
-  @ApiProperty({ example: '1' })
+  @ApiProperty({ example: 'id' })
   @IsNotEmpty()
   patientId: string;
 }

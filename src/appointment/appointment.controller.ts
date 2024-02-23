@@ -10,15 +10,17 @@ import {
 import { AppointmentService } from './appointment.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('appointment')
+@ApiTags('appointment')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
-  // @Post()
-  // create(@Body() createAppointmentDto: CreateAppointmentDto) {
-  //   return this.appointmentService.create(createAppointmentDto);
-  // }
+  @Post()
+  create(@Body() createAppointmentDto: CreateAppointmentDto) {
+    return this.appointmentService.create(createAppointmentDto);
+  }
 
   @Get('patient/:id')
   findByPatient(@Param('id') id: string) {

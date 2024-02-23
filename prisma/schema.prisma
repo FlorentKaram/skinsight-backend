@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // directUrl = env("DIRECT_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -70,7 +70,7 @@ model Consultation {
   evolution   Boolean      @default(false)
   advice      String? // rempli par le generaliste
   criticality Criticality? // rempli par le generaliste ou le dermatologiste
-  file        String
+  files       String[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 

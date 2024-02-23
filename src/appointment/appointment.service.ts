@@ -7,11 +7,11 @@ import { PrismaService } from 'src/database/prisma.service';
 export class AppointmentService {
   constructor(private prisma: PrismaService) {}
 
-  // async create(createAppointmentDto: CreateAppointmentDto) {
-  //   const newAppointment = await this.prisma.appointment.create({
-  //     data: createAppointmentDto,
-  //   });
-  // }
+  async create(createAppointmentDto: CreateAppointmentDto) {
+    const newAppointment = await this.prisma.appointment.create({
+      data: createAppointmentDto,
+    });
+  }
 
   async findByPatient(id: string) {
     const appointments = await this.prisma.appointment.findMany({
