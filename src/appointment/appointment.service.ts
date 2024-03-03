@@ -60,7 +60,18 @@ export class AppointmentService {
   }
 
   async update(id: string, updateAppointmentDto: UpdateAppointmentDto) {
-    return `This action updates a #${id} appointment`;
+    const appointment = await this.prisma.appointment.update({
+      where: {
+        id: id,
+      },
+      data: updateAppointmentDto,
+    });
+
+    if (!appointment) {
+      throw new NotFoundException(`No appointment found with id ${id}`);
+    }
+
+    return appointment;
   }
 
   async remove(id: string) {

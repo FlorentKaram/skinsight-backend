@@ -85,20 +85,7 @@ model Consultation {
   generalist   User?      @relation("ConsGeneralist", fields: [generalistId], references: [id])
   analysis     Analysis[]
 
-  appointmentId String?      @unique
-  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
-}
-
-model Analysis {
-  id          String      @id @unique @default(uuid())
-  result      String
-  criticality Criticality
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-
-  // Relationships
-  consultationId String
-  consultation   Consultation @relation(fields: [consultationId], references: [id])
+  appointment  Appointment?
 }
 
 model Appointment {
@@ -114,8 +101,20 @@ model Appointment {
   dermatologistId String
   dermatologist   User   @relation("AppDermatologist", fields: [dermatologistId], references: [id])
 
-  consultationId String?       @unique
-  consultation   Consultation?
+  consultationId String       @unique
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
+}
+
+model Analysis {
+  id          String      @id @unique @default(uuid())
+  result      String
+  criticality Criticality
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relationships
+  consultationId String
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
 }
 
 model Conversation {
