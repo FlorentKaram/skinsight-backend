@@ -60,6 +60,14 @@ export class EncryptionService {
         !this.ids.includes(key)
       ) {
         decryptedObject[key] = this.decryptText(object[key]);
+      } else if (Array.isArray(object[key])) {
+        decryptedObject[key] = object[key].map((item: any) => {
+          if (typeof item === 'string') {
+            return this.decryptText(item);
+          } else {
+            return this.decryptObject(item);
+          }
+        });
       } else {
         decryptedObject[key] = object[key];
       }
