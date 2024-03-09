@@ -60,9 +60,9 @@ export class AuthService {
     return await this.usersService.findOne(payload.sub);
   }
 
-  decodeRefreshToken(token: string) {
+  async decodeRefreshToken(token: string) {
     try {
-      return this.jwtService.verify(token);
+      return await this.jwtService.verify(token);
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
     }

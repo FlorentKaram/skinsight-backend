@@ -93,4 +93,12 @@ export class AuthController {
 
     return res.send({ access_token: newAccessToken });
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  async logout(@Res() res: Response) {
+    res.clearCookie('refresh_token');
+
+    return res.send({ message: 'Logout successful' });
+  }
 }
