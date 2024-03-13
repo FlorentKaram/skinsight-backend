@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Role, Sex } from '@prisma/client';
+import { Appointment, Role, Sex } from '@prisma/client';
 import { EncryptionService } from 'src/encryption/encryption.service';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/database/prisma.service';
@@ -87,6 +87,10 @@ export class SeederService {
       where: { email: 'dermato@skinsight.com' },
     });
 
+    if (!patient || !generalist || !dermatologist) {
+      throw new Error('Users are not seeded yet');
+    }
+
     const consultations = [
       {
         generalistId: generalist?.id,
@@ -156,5 +160,52 @@ export class SeederService {
     }
   }
 
-  async seedAppointments() {}
+  async seedAppointments() {
+    const patient = await this.prisma.user.findUnique({
+      where: { email: 'patient@skinsight.com' },
+    });
+
+    const dermatologist = await this.prisma.user.findUnique({
+      where: { email: 'dermato@skinsight.com' },
+    });
+
+    const consultations = await (
+      await this.prisma.consultation.findMany()
+    ).map(
+      (consultation) => consultation.id,
+    );
+
+    if (consultations.length >= 5 && patient && dermatologist) {
+      const appointments = [
+        {
+          dermatologistId: dermatologist?.id,
+          patientId: patient?.id,
+          date: new Date(2023, 11, 1, 14, 0, 0),
+          consultationId: consultations[0],
+        },
+        {
+          dermatologistId: dermatologist?.id,
+          patientId: patient?.id,
+          date: new Date(2023, 11, 15, 14, 0, 0),
+          consultationId: consultations[1],
+        },
+        {
+          dermatologistId: dermatologist?.id,
+          patientId: patient?.id,
+          date: new Date(2023, 11, 29, 14, 0, 0),
+          consultationId: consultations[2],
+        },
+      ];
+
+      for (const appointment of appointments) {
+          await this.prisma.appointment.upsert({
+            where: { consultationId: appointment.consultationId },
+            update: {},
+            create: this.encrypt.encryptObject(appointment, ['date']),
+          });
+      }
+    } else {
+      throw new Error('Consultations are not seeded yet');
+    }
+  }
 }

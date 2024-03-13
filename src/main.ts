@@ -7,7 +7,6 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const env = process.env.NODE_ENV || 'dev';
-  console.log('env value:', process.env.NODE_ENV);
 
   const config = new DocumentBuilder()
     // swagger title
@@ -47,7 +46,6 @@ async function bootstrap() {
   );
   const document = SwaggerModule.createDocument(app, config);
   if (env === 'dev') {
-    console.log('coucou');
     console.log(process.env);
     SwaggerModule.setup('dev/backskinsight/' + 'api', app, document);
   } else {

@@ -14,11 +14,12 @@ export class EncryptionService {
     this.ids = [
       'id',
       'patientId',
-      'consultationId',
+      'generalistId',
       'dermatologistId',
+      'consultationId',
       'conversationId',
       'userId',
-      'generalistId',
+      'email'
     ];
   }
 
