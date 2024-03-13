@@ -47,6 +47,16 @@ export class ConsultationsController {
     return await this.consultationsService.findByDermatologist(id);
   }
 
+  @Post('generalist/getNewConsultation/:id')
+  async newGeneralistConsultation(@Param('id') id: string) {
+    return await this.consultationsService.newGeneralistConsultation(id);
+  }
+
+  @Post('dermatologist/getNewConsultation/:id')
+  async newDermatologistConsultation(@Param('id') id: string) {
+    return await this.consultationsService.newDermatologistConsultation(id);
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,

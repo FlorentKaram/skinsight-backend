@@ -127,6 +127,40 @@ export class ConsultationsService {
     return 'Consultation updated successfully';
   }
 
+  async newGeneralistConsultation(id: string) {
+    const consultation = await this.prisma.consultation.findFirst({
+      where: { status: Status.PENDING, generalistId: null },
+    });
+
+    if (!consultation) {
+      throw new NotFoundException('No pending consultation found');
+    }
+
+    const affected = await this.prisma.consultation.update({
+      where: { id: consultation.id },
+      data: { generalistId: id },
+    });
+
+    return this.encrypte.decryptObject(affected);
+  }
+
+  async newDermatologistConsultation(id: string) {
+    const consultation = await this.prisma.consultation.findFirst({
+      where: { status: Status.ANALYZED, dermatologistId: null },
+    });
+
+    if (!consultation) {
+      throw new NotFoundException('No pending consultation found');
+    }
+
+    const affected = await this.prisma.consultation.update({
+      where: { id: consultation.id },
+      data: { dermatologistId: id },
+    });
+
+    return this.encrypte.decryptObject(affected);
+  }
+
   async remove(id: string) {
     const c = await this.prisma.consultation.delete({
       where: { id },
