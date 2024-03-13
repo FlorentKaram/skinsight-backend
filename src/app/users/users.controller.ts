@@ -9,15 +9,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { ConsultationsService } from '../consultations/consultations.service';
 
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly consultationsService: ConsultationsService,
+  ) {}
 
   @Get('all')
   @UseGuards(JwtAuthGuard)
@@ -45,5 +48,15 @@ export class UsersController {
   @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Post('generalist/:id/getConsultation')
+  async newGeneralistConsultation(@Param('id') id: string) {
+    return await this.consultationsService.newGeneralistConsultation(id);
+  }
+
+  @Post('dermatologist/:id/getConsultation')
+  async newDermatologistConsultation(@Param('id') id: string) {
+    return await this.consultationsService.newDermatologistConsultation(id);
   }
 }

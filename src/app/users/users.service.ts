@@ -38,6 +38,14 @@ export class UsersService {
   async findOne(id: string) {
     return this.prisma.user.findUnique({
       where: { id },
+      select: {
+        id: true,
+        email: true,
+        secuNumber: true,
+        address: true,
+        zipCode: true,
+        city: true,
+      },
     });
   }
 
