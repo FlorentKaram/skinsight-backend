@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ConsultationsModule } from './consultations/consultations.module';
 import { EncryptionModule } from './encryption/encryption.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AppointmentModule } from './appointment/appointment.module';
     ConsultationsModule,
     EncryptionModule,
     AppointmentModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [AppService],

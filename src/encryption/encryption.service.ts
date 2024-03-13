@@ -16,9 +16,9 @@ export class EncryptionService {
       'patientId',
       'consultationId',
       'dermatologistId',
-      'professionalId',
       'conversationId',
       'userId',
+      'generalistId',
     ];
   }
 
