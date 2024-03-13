@@ -1,4 +1,3 @@
-import { CreateUserDto } from './../users/dto/create-user.dto';
 import {
   Body,
   Controller,
@@ -9,10 +8,10 @@ import {
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { User } from '@prisma/client';
 import { Request, Response } from 'express';
 import { LoginDto } from './dto/login.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/app/users/dto/create-user.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -92,5 +91,13 @@ export class AuthController {
     });
 
     return res.send({ access_token: newAccessToken });
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  async logout(@Res() res: Response) {
+    res.clearCookie('refresh_token');
+
+    return res.send({ message: 'Logout successful' });
   }
 }

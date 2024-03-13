@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   // directUrl = env("DIRECT_URL")
 }
 
@@ -21,9 +21,8 @@ enum Sex {
 
 enum Status {
   PENDING
-  IN_PROGRESS
-  TERMINATED
-  CANCELED
+  ANALYZED
+  APPOINTMENT
 }
 
 enum Criticality {
@@ -71,7 +70,7 @@ model Consultation {
   evolution   Boolean      @default(false)
   advice      String? // rempli par le generaliste
   criticality Criticality? // rempli par le generaliste ou le dermatologiste
-  file        String
+  files       String[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -86,8 +85,24 @@ model Consultation {
   generalist   User?      @relation("ConsGeneralist", fields: [generalistId], references: [id])
   analysis     Analysis[]
 
-  appointmentId String?      @unique
-  appointment   Appointment? @relation(fields: [appointmentId], references: [id])
+  appointment  Appointment?
+}
+
+model Appointment {
+  id        String    @id @unique @default(uuid())
+  date      DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relationships
+  patientId String
+  patient   User   @relation("AppPatient", fields: [patientId], references: [id])
+
+  dermatologistId String
+  dermatologist   User   @relation("AppDermatologist", fields: [dermatologistId], references: [id])
+
+  consultationId String       @unique
+  consultation   Consultation @relation(fields: [consultationId], references: [id])
 }
 
 model Analysis {
@@ -100,23 +115,6 @@ model Analysis {
   // Relationships
   consultationId String
   consultation   Consultation @relation(fields: [consultationId], references: [id])
-}
-
-model Appointment {
-  id        String   @id @unique @default(uuid())
-  date      DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relationships
-  patientId String
-  patient   User   @relation("AppPatient", fields: [patientId], references: [id])
-
-  dermatologistId String
-  dermatologist   User   @relation("AppDermatologist", fields: [dermatologistId], references: [id])
-
-  consultationId String?       @unique
-  consultation   Consultation?
 }
 
 model Conversation {

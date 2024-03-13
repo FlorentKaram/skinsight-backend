@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateConsultationDto } from './dto/create-consultation.dto';
 import { UpdateConsultationDto } from './dto/update-consultation.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { EncryptionService } from 'src/encryption/encryption.service';
+import { EncryptionService } from 'src/security/encryption/encryption.service';
 import { Status } from '@prisma/client';
 
 @Injectable()
@@ -70,6 +70,38 @@ export class ConsultationsService {
     return consultations.map((c) => this.encrypte.decryptObject(c));
   }
 
+  async findByGeneralist(id: string) {
+    const generalist = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!generalist) {
+      throw new NotFoundException('Doctor not found');
+    }
+
+    const consultations = await this.prisma.consultation.findMany({
+      where: { generalistId: id },
+    });
+
+    return consultations.map((c) => this.encrypte.decryptObject(c));
+  }
+
+  async findByDermatologist(id: string) {
+    const dermatologist = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!dermatologist) {
+      throw new NotFoundException('Doctor not found');
+    }
+
+    const consultations = await this.prisma.consultation.findMany({
+      where: { dermatologistId: id },
+    });
+
+    return consultations.map((c) => this.encrypte.decryptObject(c));
+  }
+
   async update(id: string, updateConsultationDto: UpdateConsultationDto) {
     const patient = await this.prisma.user.findUnique({
       where: { id: updateConsultationDto.patientId },
@@ -93,6 +125,40 @@ export class ConsultationsService {
     }
 
     return 'Consultation updated successfully';
+  }
+
+  async newGeneralistConsultation(id: string) {
+    const consultation = await this.prisma.consultation.findFirst({
+      where: { status: Status.PENDING, generalistId: null },
+    });
+
+    if (!consultation) {
+      throw new NotFoundException('No pending consultation found');
+    }
+
+    const affected = await this.prisma.consultation.update({
+      where: { id: consultation.id },
+      data: { generalistId: id },
+    });
+
+    return this.encrypte.decryptObject(affected);
+  }
+
+  async newDermatologistConsultation(id: string) {
+    const consultation = await this.prisma.consultation.findFirst({
+      where: { status: Status.ANALYZED, dermatologistId: null },
+    });
+
+    if (!consultation) {
+      throw new NotFoundException('No analyzed consultation found');
+    }
+
+    const affected = await this.prisma.consultation.update({
+      where: { id: consultation.id },
+      data: { dermatologistId: id },
+    });
+
+    return this.encrypte.decryptObject(affected);
   }
 
   async remove(id: string) {

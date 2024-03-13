@@ -14,11 +14,14 @@ export class EncryptionService {
     this.ids = [
       'id',
       'patientId',
-      'consultationId',
+      'generalistId',
       'dermatologistId',
-      'professionalId',
+      'consultationId',
       'conversationId',
       'userId',
+      'email',
+      'role',
+      'sex'
     ];
   }
 
@@ -29,6 +32,14 @@ export class EncryptionService {
         encryptedObject[key] = object[key] as any;
       } else if (typeof object[key] === 'string') {
         encryptedObject[key] = this.encryptText(object[key]);
+      } else if (Array.isArray(object[key])) {
+        encryptedObject[key] = object[key].map((item: any) => {
+          if (typeof item === 'string') {
+            return this.encryptText(item);
+          } else {
+            return this.encryptObject(item);
+          }
+        });
       } else {
         encryptedObject[key] = object[key];
       }
@@ -46,8 +57,20 @@ export class EncryptionService {
   decryptObject(object: { [key: string]: any }, blackList?: string[]) {
     const decryptedObject: any = {};
     for (const key in object) {
-      if (typeof object[key] === 'string' && !blackList?.includes(key) && !this.ids.includes(key)) {
+      if (
+        typeof object[key] === 'string' &&
+        !blackList?.includes(key) &&
+        !this.ids.includes(key)
+      ) {
         decryptedObject[key] = this.decryptText(object[key]);
+      } else if (Array.isArray(object[key])) {
+        decryptedObject[key] = object[key].map((item: any) => {
+          if (typeof item === 'string') {
+            return this.decryptText(item);
+          } else {
+            return this.decryptObject(item);
+          }
+        });
       } else {
         decryptedObject[key] = object[key];
       }
