@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateConsultationDto } from './dto/create-consultation.dto';
 import { UpdateConsultationDto } from './dto/update-consultation.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { EncryptionService } from 'src/encryption/encryption.service';
+import { EncryptionService } from 'src/security/encryption/encryption.service';
 import { Status } from '@prisma/client';
 
 @Injectable()

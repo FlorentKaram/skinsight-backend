@@ -5,9 +5,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
+import { Role, User } from '@prisma/client';
+import { CreateUserDto } from 'src/app/users/dto/create-user.dto';
+import { UsersService } from 'src/app/users/users.service';
 import { v4 as uuid } from 'uuid';
 import * as bcrypt from 'bcrypt';
 

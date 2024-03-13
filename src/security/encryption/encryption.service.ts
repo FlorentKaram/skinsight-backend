@@ -19,7 +19,9 @@ export class EncryptionService {
       'consultationId',
       'conversationId',
       'userId',
-      'email'
+      'email',
+      'role',
+      'sex'
     ];
   }
 

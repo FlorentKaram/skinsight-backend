@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Appointment, Role, Sex } from '@prisma/client';
-import { EncryptionService } from 'src/encryption/encryption.service';
+import { EncryptionService } from 'src/security/encryption/encryption.service';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -14,9 +14,9 @@ export class SeederService {
   ) {}
 
   async seedUsers() {
-    const patientPwd = await bcrypt.hash('patient', this.roundsOfHash);
-    const generalistPwd = await bcrypt.hash('generalist', this.roundsOfHash);
-    const dermatoPwd = await bcrypt.hash('dermato', this.roundsOfHash);
+    const patientPwd = await bcrypt.hash('patient!', this.roundsOfHash);
+    const generalistPwd = await bcrypt.hash('generalist!', this.roundsOfHash);
+    const dermatoPwd = await bcrypt.hash('dermato!', this.roundsOfHash);
 
     const users = [
       {

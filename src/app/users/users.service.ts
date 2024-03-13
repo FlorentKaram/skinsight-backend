@@ -1,29 +1,34 @@
-import { PrismaClient, Role } from '@prisma/client';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Role, User } from '@prisma/client';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { EncryptionService } from 'src/security/encryption/encryption.service';
 
 export const roundsOfHash = 10;
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private encrypt: EncryptionService) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User>{
     createUserDto.password = await bcrypt.hash(
       createUserDto.password,
       roundsOfHash,
     );
-    
-    if(createUserDto.role === Role.DERMATOLOGIST || createUserDto.role === Role.GENERALIST && !createUserDto.rppsNumber) {
-      throw new Error('RPPS number is required for dermatologist and generalist');
-    } else if(createUserDto.role === Role.PATIENT && !createUserDto.secuNumber) {
-      throw new Error('Secu number is required for patient');
+
+    if (createUserDto.role === Role.DERMATOLOGIST || createUserDto.role === Role.GENERALIST && !createUserDto.rppsNumber) {
+      throw new NotAcceptableException('RPPS number is required for dermatologist and generalist');
+    } else if (createUserDto.role === Role.PATIENT && !createUserDto.secuNumber) {
+      throw new NotAcceptableException('Secu number is required for patient');
     }
-    
-    return this.prisma.user.create({ data: createUserDto });
+
+    const newUser = await this.prisma.user.create({ data: this.encrypt.encryptObject(createUserDto) });
+
+    return newUser;
+
+
   }
 
   async findAll() {
