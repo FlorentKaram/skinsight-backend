@@ -25,18 +25,25 @@ export class UsersService {
     }
 
     const newUser = await this.prisma.user.create({ data: this.encrypt.encryptObject(createUserDto) });
-
-    return newUser;
+    return this.encrypt.decryptObject(newUser);
 
 
   }
 
   async findAll() {
-    return this.prisma.user.findMany();
+    const users = await this.prisma.user.findMany();
+    
+    // omit password and timestamp fields
+    const sanitizedUsers = users.map((user) => {
+      const { password, ...sanitizedUser } = user;
+      return sanitizedUser
+    });
+
+    return sanitizedUsers.map((user) => this.encrypt.decryptObject(user));
   }
 
   async findOne(id: string) {
-    return this.prisma.user.findUnique({
+    const user = this.prisma.user.findUnique({
       where: { id },
       select: {
         id: true,
@@ -47,6 +54,12 @@ export class UsersService {
         city: true,
       },
     });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.encrypt.decryptObject(user);
   }
 
   async findByEmail(email: string) {
@@ -58,7 +71,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    return user;
+    return this.encrypt.decryptObject(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -78,7 +91,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     
-    return user;
+    return this.encrypt.decryptObject(user);
   }
 
   remove(id: string) {

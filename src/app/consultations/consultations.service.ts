@@ -150,7 +150,7 @@ export class ConsultationsService {
     });
 
     if (!consultation) {
-      throw new NotFoundException('No pending consultation found');
+      throw new NotFoundException('No analyzed consultation found');
     }
 
     const affected = await this.prisma.consultation.update({
