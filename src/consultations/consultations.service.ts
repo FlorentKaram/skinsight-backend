@@ -70,6 +70,38 @@ export class ConsultationsService {
     return consultations.map((c) => this.encrypte.decryptObject(c));
   }
 
+  async findByGeneralist(id: string) {
+    const generalist = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!generalist) {
+      throw new NotFoundException('Doctor not found');
+    }
+
+    const consultations = await this.prisma.consultation.findMany({
+      where: { generalistId: id },
+    });
+
+    return consultations.map((c) => this.encrypte.decryptObject(c));
+  }
+
+  async findByDermatologist(id: string) {
+    const dermatologist = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!dermatologist) {
+      throw new NotFoundException('Doctor not found');
+    }
+
+    const consultations = await this.prisma.consultation.findMany({
+      where: { dermatologistId: id },
+    });
+
+    return consultations.map((c) => this.encrypte.decryptObject(c));
+  }
+
   async update(id: string, updateConsultationDto: UpdateConsultationDto) {
     const patient = await this.prisma.user.findUnique({
       where: { id: updateConsultationDto.patientId },
