@@ -43,27 +43,21 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        email: true,
-        secuNumber: true,
-        address: true,
-        zipCode: true,
-        city: true,
-      },
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    return this.encrypt.decryptObject(user);
+    const { password, ...sanitizedUser } = user;
+
+    return this.encrypt.decryptObject(sanitizedUser);
   }
 
   async findByEmail(email: string) {
-    const user = this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email },
     });
 

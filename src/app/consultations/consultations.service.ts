@@ -103,18 +103,12 @@ export class ConsultationsService {
   }
 
   async update(id: string, updateConsultationDto: UpdateConsultationDto) {
-    const patient = await this.prisma.user.findUnique({
-      where: { id: updateConsultationDto.patientId },
-    });
-
-    if (!patient) {
-      throw new NotFoundException('Patient not found');
-    }
-
     const encryptedConsultation = this.encrypte.encryptObject(
       updateConsultationDto,
       ['id', 'patientId'],
     );
+
+    console.log("encryptedConsultation", encryptedConsultation);
     const consultation = await this.prisma.consultation.update({
       where: { id },
       data: encryptedConsultation,
