@@ -1,5 +1,9 @@
 import { Role, User } from '@prisma/client';
-import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -10,33 +14,44 @@ export const roundsOfHash = 10;
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService, private encrypt: EncryptionService) {}
+  constructor(
+    private prisma: PrismaService,
+    private encrypt: EncryptionService,
+  ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User>{
+  async create(createUserDto: CreateUserDto): Promise<User> {
     createUserDto.password = await bcrypt.hash(
       createUserDto.password,
       roundsOfHash,
     );
 
-    if (createUserDto.role === Role.DERMATOLOGIST || createUserDto.role === Role.GENERALIST && !createUserDto.rppsNumber) {
-      throw new NotAcceptableException('RPPS number is required for dermatologist and generalist');
-    } else if (createUserDto.role === Role.PATIENT && !createUserDto.secuNumber) {
+    if (
+      createUserDto.role === Role.DERMATOLOGIST ||
+      (createUserDto.role === Role.GENERALIST && !createUserDto.rppsNumber)
+    ) {
+      throw new NotAcceptableException(
+        'RPPS number is required for dermatologist and generalist',
+      );
+    } else if (
+      createUserDto.role === Role.PATIENT &&
+      !createUserDto.secuNumber
+    ) {
       throw new NotAcceptableException('Secu number is required for patient');
     }
 
-    const newUser = await this.prisma.user.create({ data: this.encrypt.encryptObject(createUserDto) });
+    const newUser = await this.prisma.user.create({
+      data: this.encrypt.encryptObject(createUserDto),
+    });
     return this.encrypt.decryptObject(newUser);
-
-
   }
 
   async findAll() {
     const users = await this.prisma.user.findMany();
-    
+
     // omit password and timestamp fields
     const sanitizedUsers = users.map((user) => {
       const { password, ...sanitizedUser } = user;
-      return sanitizedUser
+      return sanitizedUser;
     });
 
     return sanitizedUsers.map((user) => this.encrypt.decryptObject(user));
@@ -61,11 +76,11 @@ export class UsersService {
       where: { email },
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (user) {
+      return this.encrypt.decryptObject(user);
+    } else {
+      return null;
     }
-
-    return this.encrypt.decryptObject(user);
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -84,7 +99,7 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    
+
     return this.encrypt.decryptObject(user);
   }
 
@@ -97,6 +112,6 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
-    return "deleted successfully";
+    return 'deleted successfully';
   }
 }

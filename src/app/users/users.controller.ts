@@ -11,7 +11,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { ConsultationsService } from '../consultations/consultations.service';
 
 @Controller('users')
@@ -51,11 +51,15 @@ export class UsersController {
   }
 
   @Post('generalist/:id/getConsultation')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async newGeneralistConsultation(@Param('id') id: string) {
     return await this.consultationsService.newGeneralistConsultation(id);
   }
 
   @Post('dermatologist/:id/getConsultation')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async newDermatologistConsultation(@Param('id') id: string) {
     return await this.consultationsService.newDermatologistConsultation(id);
   }
