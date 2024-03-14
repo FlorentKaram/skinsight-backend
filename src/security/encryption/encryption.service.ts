@@ -21,7 +21,9 @@ export class EncryptionService {
       'userId',
       'email',
       'role',
-      'sex'
+      'sex',
+      'status',
+      'criticality',
     ];
   }
 
